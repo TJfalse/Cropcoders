@@ -1,0 +1,73 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  farms     Farm[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Farm {
+  id          String       @id @default(uuid())
+  ownerId     String
+  name        String
+  centerLat   Float
+  centerLng   Float
+  polygonGeo  Json?       // optional farm polygon (GeoJSON)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  owner       User        @relation(fields: [ownerId], references: [id])
+  coordinates Coordinate[]
+
+  @@index([ownerId])
+}
+
+model Coordinate {
+  id             String    @id @default(uuid())
+  clientEventId  String    // id from client for idempotency
+  farmId         String
+  farm           Farm      @relation(fields: [farmId], references: [id])
+  lat            Float
+  lng            Float
+  accuracy       Float?
+  status         String    @default("queued") // queued, fetching, fetched, processed, failed
+  queuedAt       DateTime  @default(now())
+  fetchedImageId String?   // reference to Image
+  processedAt    DateTime?
+  image          Image?    @relation(fields: [fetchedImageId], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([farmId])
+  @@index([clientEventId])
+  @@unique([farmId, clientEventId])
+}
+
+model Image {
+  id          String       @id @default(uuid())
+  key         String      @unique // S3 key / path
+  tileId      String?
+  bbox        Json?        // bounding box
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  meta        Json?
+  result      Json?        // ML inference result
+  coordinates Coordinate[]
+}
+  bbox       Json?       // bounding box
+  createdAt  DateTime    @default(now())
+  meta       Json?
+  result     Json?       // ML inference result
+  Coordinate Coordinate?
+}
