@@ -159,7 +159,3 @@ AWS_REGION="us-east-1"
 
 The project includes Docker support for easy deployment:
 
-\`\`\`bash
-# Build and run with Docker Compose
-docker-compose up --build
-\`\`\`
