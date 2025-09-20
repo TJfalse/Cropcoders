@@ -113,7 +113,7 @@ AWS_REGION="us-east-1"
 
 1. Clone the repository:
    \`\`\`bash
-   git clone https://github.com/yourusername/SIH.git
+   git clone https://github.com/yourusername/Cropcoders.git
    cd SIH
    \`\`\`
 
