@@ -65,9 +65,3 @@ model Image {
   result      Json?        // ML inference result
   coordinates Coordinate[]
 }
-  bbox       Json?       // bounding box
-  createdAt  DateTime    @default(now())
-  meta       Json?
-  result     Json?       // ML inference result
-  Coordinate Coordinate?
-}
