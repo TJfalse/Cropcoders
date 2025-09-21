@@ -4,7 +4,7 @@ import {
   getCoordinateStatus,
   syncOfflineEvents,
 } from "../controllers/coordinateController.js";
-import { authenticateToken } from "../middleware/auth.js";
+import { authenticateToken } from "../../middleware/auth.js";
 
 const router = express.Router();
 

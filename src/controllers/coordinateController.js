@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Queue } from "bull";
+import Queue from 'bull';
 
 const prisma = new PrismaClient();
 const imageQueue = new Queue("fetch-image", process.env.REDIS_URL);

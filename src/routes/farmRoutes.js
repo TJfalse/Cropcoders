@@ -4,7 +4,7 @@ import {
   getFarms,
   getFarm,
 } from "../controllers/farmController.js";
-import { authenticateToken } from "../middleware/auth.js";
+import { authenticateToken } from "../../middleware/auth.js";
 
 const router = express.Router();
 
