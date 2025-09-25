@@ -11,13 +11,18 @@ async function testImageFetch() {
         const toDate = new Date().toISOString();
         const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
         
-        console.log(`Fetching satellite image for bbox: ${bbox}`);
-        const imageData = await fetchSatelliteImage(bbox, fromDate, toDate);
-    
+        // Test different indices
+        const indices = ['RGB', 'NDVI', 'NDWI'];
         
-        const filename = `satellite_image_${Date.now()}.png`;
-        await fs.writeFile(filename, imageData);
-        console.log(`Image saved as ${filename}`);
+        for (const index of indices) {
+            console.log(`Fetching ${index} image for bbox: ${bbox}`);
+            const imageData = await fetchSatelliteImage(bbox, fromDate, toDate, index);
+            
+            // Save the image
+            const filename = `satellite_${index.toLowerCase()}_${Date.now()}.png`;
+            await fs.writeFile(filename, imageData);
+            console.log(`${index} image saved as ${filename}`);
+        }
     } catch (error) {
         console.error('Error:', error.response ? {
             status: error.response.status,

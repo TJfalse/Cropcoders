@@ -21,19 +21,60 @@ async function getAccessToken() {
   }
 }
 
-async function fetchSatelliteImage(bbox, fromDate, toDate) {
-  const token = await getAccessToken();
-
-  const evalscript = `//VERSION=3
+const EVALSCRIPTS = {
+  RGB: `//VERSION=3
   function setup() {
     return {
-      input: ["B04", "B03", "B02"],
+      input: ["B04", "B03", "B02"], // Red, Green, Blue
+      output: { bands: 3 }
+    };
+  }
+function evaluatePixel(sample) {
+  return [
+    sample.B04 / 10000,  // Red
+    sample.B03 / 10000,  // Green
+    sample.B02 / 10000   // Blue
+  ];
+}`,
+
+  NDVI: `//VERSION=3
+  function setup() {
+    return {
+      input: ["B08", "B04"], // NIR, Red
+      output: { bands: 3 }
+    };
+  }
+function evaluatePixel(sample) {
+  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
+  let scaledNDVI = (ndvi + 1) / 2;
+  return [scaledNDVI, scaledNDVI, scaledNDVI];
+}`,
+
+  NDWI: `//VERSION=3
+  function setup() {
+    return {
+      input: ["B03", "B08"], // Green, NIR
       output: { bands: 3 }
     };
   }
   function evaluatePixel(sample) {
-    return [sample.B04, sample.B03, sample.B02];
-  }`;
+    let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
+    return [
+      0,          // R
+      (1 + ndwi), // G (water in green)
+      (-ndwi)     // B (vegetation in blue)
+    ];
+  }`
+};
+
+async function fetchSatelliteImage(bbox, fromDate, toDate, index = 'RGB') {
+  const token = await getAccessToken();
+
+  if (!EVALSCRIPTS[index]) {
+    throw new Error(`Unsupported index: ${index}. Available indices: ${Object.keys(EVALSCRIPTS).join(', ')}`);
+  }
+
+  const evalscript = EVALSCRIPTS[index];
 
   const requestBody = {
     input: {
