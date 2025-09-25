@@ -30,13 +30,13 @@ const prisma = new PrismaClient();
 // Initialize Queue with retry strategy
 const imageQueue = new Queue("fetch-image", process.env.REDIS_URL, {
   defaultJobOptions: {
-    attempts: 5, 
+    attempts: 5,
     backoff: {
       type: "exponential",
-      delay: 5000, 
+      delay: 5000,
     },
-    removeOnComplete: 100, 
-    removeOnFail: 100, 
+    removeOnComplete: 100,
+    removeOnFail: 100,
   },
 });
 
