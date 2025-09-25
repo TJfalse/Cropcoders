@@ -21,11 +21,10 @@ function zoomToBBox(lat, lng, zoom = 10) {
 
 async function testImageFetch() {
     try {
-        const lat = 27.1751;
-        const lng = 78.0395;
-        const zoom = 20; // increase to zoom in more
-        const bbox = zoomToBBox(lat, lng, zoom);
-
+        const lat = 23.244161540281503 ;
+        const lng = 87.8386416974914;
+        const bbox = [lng - 0.1, lat - 0.1, lng + 0.1, lat + 0.1];
+        
         const toDate = new Date().toISOString();
         const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
