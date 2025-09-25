@@ -4,8 +4,8 @@ import fs from "fs/promises";
 
 async function testImageFetch() {
     try {
-        const lat = 27.1751;
-        const lng = 78.0395;
+        const lat = 23.244161540281503 ;
+        const lng = 87.8386416974914;
         const bbox = [lng - 0.1, lat - 0.1, lng + 0.1, lat + 0.1];
         
         const toDate = new Date().toISOString();

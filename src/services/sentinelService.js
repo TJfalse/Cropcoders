@@ -25,7 +25,7 @@ async function getAccessToken() {
 }
 
 const EVALSCRIPTS = {
-RGB: `//VERSION=3
+  RGB: `//VERSION=3
 function setup() {
   return {
     input: ["B08", "B04"], // NIR and Red
@@ -52,9 +52,6 @@ function evaluatePixel(sample) {
   }
 }
 `,
-
-
-
 
   NDVI: `//VERSION=3
   function setup() {
@@ -86,7 +83,7 @@ function evaluatePixel(sample) {
   }`,
 };
 
-async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
+async function fetchSatelliteImage(bbox, fromDate, toDate, index = "RGB") {
   const token = await getAccessToken();
 
   if (!EVALSCRIPTS[index]) {
