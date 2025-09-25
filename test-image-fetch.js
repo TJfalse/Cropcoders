@@ -27,16 +27,14 @@ async function testImageFetch() {
         const toDate = new Date().toISOString();
         const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-        const indices = ['RGB', 'NDVI', 'NDWI'];
+        // ✅ Add COLOR here
+        const indices = ['RGB', 'NDVI', 'NDWI', 'COLOR'];
 
         for (const index of indices) {
             console.log(`Fetching ${index} image for bbox: ${bbox}`);
             
-            // Request higher resolution by specifying width & height
-            const imageData = await fetchSatelliteImage(bbox, fromDate, toDate, index, {
-                width: 1024,   // increase for higher resolution
-                height: 1024
-            });
+            // Fetch image (adjusted for your fetchSatelliteImage signature)
+            const imageData = await fetchSatelliteImage(bbox, fromDate, toDate, index);
 
             const filename = `satellite_${index.toLowerCase()}_${Date.now()}.png`;
             await fs.writeFile(filename, imageData);
@@ -52,6 +50,3 @@ async function testImageFetch() {
 }
 
 testImageFetch();
-
-
-

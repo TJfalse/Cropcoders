@@ -36,30 +36,25 @@ function setup() {
 function evaluatePixel(sample) {
   let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
 
-  // Map NDVI (-1 → 1) to colors
   if (ndvi < 0.0) {
-    // Water / non-vegetated → blue
     return [0.0, 0.2, 0.6];
   } else if (ndvi < 0.2) {
-    // Bare soil → brown
     return [0.6, 0.4, 0.2];
   } else if (ndvi < 0.5) {
-    // Sparse vegetation → yellow-green
     return [0.5, 0.7, 0.2];
   } else {
-    // Dense vegetation → strong green
     return [0.1, 0.8, 0.1];
   }
 }
 `,
 
   NDVI: `//VERSION=3
-  function setup() {
-    return {
-      input: ["B08", "B04"], // NIR, Red
-      output: { bands: 3 }
-    };
-  }
+function setup() {
+  return {
+    input: ["B08", "B04"], // NIR, Red
+    output: { bands: 3 }
+  };
+}
 function evaluatePixel(sample) {
   let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
   let scaledNDVI = (ndvi + 1) / 2;
@@ -67,21 +62,34 @@ function evaluatePixel(sample) {
 }`,
 
   NDWI: `//VERSION=3
-  function setup() {
-    return {
-      input: ["B03", "B08"], // Green, NIR
-      output: { bands: 3 }
-    };
-  }
-  function evaluatePixel(sample) {
-    let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
-    return [
-      0,          // R
-      (1 + ndwi), // G (water in green)
-      (-ndwi)     // B (vegetation in blue)
-    ];
-  }`,
+function setup() {
+  return {
+    input: ["B03", "B08"], // Green, NIR
+    output: { bands: 3 }
+  };
+}
+function evaluatePixel(sample) {
+  let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
+  return [
+    0,
+    (1 + ndwi),
+    (-ndwi)
+  ];
+}`,
+
+  COLOR: `//VERSION=3
+function setup() {
+  return {
+    input: ["B04", "B03", "B02"], // Red, Green, Blue
+    output: { bands: 3 }
+  };
+}
+
+function evaluatePixel(sample) {
+  return [sample.B04, sample.B03, sample.B02];
+}`
 };
+
 
 async function fetchSatelliteImage(bbox, fromDate, toDate, index = "RGB") {
   const token = await getAccessToken();
@@ -137,10 +145,10 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index = "RGB") {
         Authorization: `Bearer ${token}`,
         Accept: "image/png",
       },
-      responseType: "arraybuffer", // return binary image
+      responseType: "arraybuffer",
     });
 
-    return res.data; // PNG buffer
+    return res.data;
   } catch (err) {
     if (err.response) {
       const text = err.response.data.toString("utf8");
