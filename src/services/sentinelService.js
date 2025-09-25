@@ -16,7 +16,7 @@ async function getAccessToken() {
     );
     return res.data.access_token;
   } catch (err) {
-    console.error("❌ Failed to get Sentinel token:", err.response?.data || err.message);
+    console.error("Failed to get Sentinel token:", err.response?.data || err.message);
     throw new Error("Authentication with Sentinel Hub failed");
   }
 }
