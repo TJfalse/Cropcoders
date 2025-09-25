@@ -22,20 +22,36 @@ async function getAccessToken() {
 }
 
 const EVALSCRIPTS = {
-  RGB: `//VERSION=3
-  function setup() {
-    return {
-      input: ["B04", "B03", "B02"], // Red, Green, Blue
-      output: { bands: 3 }
-    };
-  }
+RGB: `//VERSION=3
+function setup() {
+  return {
+    input: ["B08", "B04"], // NIR and Red
+    output: { bands: 3 }   // RGB output
+  };
+}
+
 function evaluatePixel(sample) {
-  return [
-    sample.B04 / 10000,  // Red
-    sample.B03 / 10000,  // Green
-    sample.B02 / 10000   // Blue
-  ];
-}`,
+  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
+
+  // Map NDVI (-1 → 1) to colors
+  if (ndvi < 0.0) {
+    // Water / non-vegetated → blue
+    return [0.0, 0.2, 0.6];
+  } else if (ndvi < 0.2) {
+    // Bare soil → brown
+    return [0.6, 0.4, 0.2];
+  } else if (ndvi < 0.5) {
+    // Sparse vegetation → yellow-green
+    return [0.5, 0.7, 0.2];
+  } else {
+    // Dense vegetation → strong green
+    return [0.1, 0.8, 0.1];
+  }
+}
+`,
+
+
+
 
   NDVI: `//VERSION=3
   function setup() {
@@ -67,7 +83,7 @@ function evaluatePixel(sample) {
   }`
 };
 
-async function fetchSatelliteImage(bbox, fromDate, toDate, index = 'RGB') {
+async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
   const token = await getAccessToken();
 
   if (!EVALSCRIPTS[index]) {
