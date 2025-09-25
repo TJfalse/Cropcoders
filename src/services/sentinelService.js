@@ -16,7 +16,10 @@ async function getAccessToken() {
     );
     return res.data.access_token;
   } catch (err) {
-    console.error("Failed to get Sentinel token:", err.response?.data || err.message);
+    console.error(
+      "Failed to get Sentinel token:",
+      err.response?.data || err.message
+    );
     throw new Error("Authentication with Sentinel Hub failed");
   }
 }
@@ -80,14 +83,18 @@ function evaluatePixel(sample) {
       (1 + ndwi), // G (water in green)
       (-ndwi)     // B (vegetation in blue)
     ];
-  }`
+  }`,
 };
 
 async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
   const token = await getAccessToken();
 
   if (!EVALSCRIPTS[index]) {
-    throw new Error(`Unsupported index: ${index}. Available indices: ${Object.keys(EVALSCRIPTS).join(', ')}`);
+    throw new Error(
+      `Unsupported index: ${index}. Available indices: ${Object.keys(
+        EVALSCRIPTS
+      ).join(", ")}`
+    );
   }
 
   const evalscript = EVALSCRIPTS[index];
@@ -97,8 +104,8 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
       bounds: {
         bbox: bbox, // [minLon, minLat, maxLon, maxLat]
         properties: {
-          crs: "http://www.opengis.net/def/crs/EPSG/0/4326"
-        }
+          crs: "http://www.opengis.net/def/crs/EPSG/0/4326",
+        },
       },
       data: [
         {
@@ -108,10 +115,10 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
               from: fromDate,
               to: toDate,
             },
-            maxCloudCoverage: 20
-          }
-        }
-      ]
+            maxCloudCoverage: 20,
+          },
+        },
+      ],
     },
     output: {
       width: 512,
@@ -119,21 +126,21 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index ='RGB') {
       responses: [
         {
           identifier: "default",
-          format: { type: "image/png" }
-        }
-      ]
+          format: { type: "image/png" },
+        },
+      ],
     },
-    evalscript: evalscript
+    evalscript: evalscript,
   };
 
   try {
     const res = await axios.post(SENTINEL_PROCESS_URL, requestBody, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-        "Accept": "image/png"
+        Authorization: `Bearer ${token}`,
+        Accept: "image/png",
       },
-      responseType: "arraybuffer" // return binary image
+      responseType: "arraybuffer", // return binary image
     });
 
     return res.data; // PNG buffer

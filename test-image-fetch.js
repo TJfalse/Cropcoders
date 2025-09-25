@@ -1,6 +1,6 @@
-import 'dotenv/config';
-import { fetchSatelliteImage } from './src/services/sentinelService.js';
-import fs from 'fs/promises';
+import "dotenv/config";
+import { fetchSatelliteImage } from "./src/services/sentinelService.js";
+import fs from "fs/promises";
 
 async function testImageFetch() {
     try {
@@ -27,9 +27,11 @@ async function testImageFetch() {
         console.error('Error:', error.response ? {
             status: error.response.status,
             data: error.response.data,
-            headers: error.response.headers
-        } : error.message);
-    }
+            headers: error.response.headers,
+          }
+        : error.message
+    );
+  }
 }
 
 testImageFetch();
