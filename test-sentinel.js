@@ -11,7 +11,7 @@ console.log('Client Secret:', process.env.SENTINEL_CLIENT_SECRET ? 'Present' : '
 try {
     const token = await getSentinelToken();
     console.log('Successfully obtained Sentinel token!');
-    console.log('Token:', token.substring(0, 10) + '...');  // Only show first 10 chars for security
+    console.log('Token:', token.substring(0, 10) + '...');  
 } catch (error) {
     console.error('Error getting Sentinel token:', error.response ? error.response.data : error.message);
 }
