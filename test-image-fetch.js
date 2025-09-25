@@ -19,9 +19,9 @@ function zoomToBBox(lat, lng, zoom = 10) {
 
 async function testImageFetch() {
     try {
-        const lat = 23.344161540;
-        const lng = 87.938641697;
-        const zoom = 20; // higher zoom = smaller bbox = more detail
+        const lat = 27.1745704;
+        const lng = 78.0399508;
+        const zoom = 30; // higher zoom = smaller bbox = more detail
         const bbox = zoomToBBox(lat, lng, zoom);
 
         const toDate = new Date().toISOString();
