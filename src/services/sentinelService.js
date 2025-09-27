@@ -131,7 +131,7 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index = "RGB") {
       responses: [
         {
           identifier: "default",
-          format: { type: "image/png" },
+          format: { type: "image/tiff" },
         },
       ],
     },
@@ -143,7 +143,7 @@ async function fetchSatelliteImage(bbox, fromDate, toDate, index = "RGB") {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        Accept: "image/png",
+        Accept: "image/tiff",
       },
       responseType: "arraybuffer",
     });

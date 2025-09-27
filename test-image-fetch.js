@@ -36,7 +36,7 @@ async function testImageFetch() {
             // Fetch image (adjusted for your fetchSatelliteImage signature)
             const imageData = await fetchSatelliteImage(bbox, fromDate, toDate, index);
 
-            const filename = `satellite_${index.toLowerCase()}_${Date.now()}.png`;
+            const filename = `satellite_${index.toLowerCase()}_${Date.now()}.tiff`;
             await fs.writeFile(filename, imageData);
             console.log(`${index} image saved as ${filename}`);
         }
